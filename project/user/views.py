@@ -42,7 +42,7 @@ def register():
         login_user(user)
 
         flash('A confirmation email has been sent via email.', 'success')
-        return redirect(url_for("main.index"))
+        return redirect(url_for("user.unconfirmed"))
 
     return render_template('user/register.html', form=form)
 
