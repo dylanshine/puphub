@@ -101,6 +101,7 @@ def logout():
 
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
 @login_required
+@check_confirmed
 def profile():
     form = ChangePasswordForm(request.form)
     if form.validate_on_submit():
