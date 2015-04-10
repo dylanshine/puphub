@@ -1,3 +1,5 @@
+import datetime
+
 from project import app, db
 from project import models
 from flask.ext.script import Manager
@@ -25,6 +27,19 @@ def drop_db():
 def create_admin():
     """Creates the admin user."""
     db.session.add(User("ad@min.com", "admin"))
+    db.session.commit()
+
+
+@manager.command
+def create_admin():
+    """Creates the admin user."""
+    db.session.add(User(
+        email="ad@min.com",
+        password="admin",
+        admin=True,
+        confirmed=True,
+        confirmed_on=datetime.datetime.now())
+    )
     db.session.commit()
 
 if __name__ == '__main__':
