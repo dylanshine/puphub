@@ -37,6 +37,11 @@ class RegisterForm(Form):
         return True
 
 
+class ResetPasswordForm(Form):
+    email = TextField(
+        'email', validators=[DataRequired(), Email(message=None), Length(min=6, max=40)])
+
+
 class ChangePasswordForm(Form):
     password = PasswordField(
         'password',
