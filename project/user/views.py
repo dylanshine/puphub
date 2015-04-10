@@ -33,6 +33,16 @@ def register():
         db.session.commit()
 
         token = generate_confirmation_token(user.email)
+        confirm_url = url_for(
+            'user.confirm_email', token=token, _external=True)
+        html = render_template('user/activate.html', confirm_url=confirm_url)
+        subject = "Please confirm your email"
+        send_email(user.email, subject, html)
+
+        login_user(user)
+
+        flash('A confirmation email has been sent via email.', 'success')
+        return redirect(url_for("main.home"))
 
     return render_template('user/register.html', form=form)
 
