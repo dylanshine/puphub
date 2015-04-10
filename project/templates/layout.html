@@ -9,7 +9,7 @@
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{url_for('.static', filename='css/jumbotron-narrow.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/main/jumbotron-narrow.css')}}">
     {% block css %}
     {% endblock %}
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -25,9 +25,15 @@
       <div class="header clearfix">
         <nav>
           <ul class="nav nav-pills pull-right">
-            <li role="presentation"><a href="{{ url_for('default.index') }}">Home</a></li>
-            <li role="presentation"><a href="{{ url_for('default.about') }}">About</a></li>
+            <li role="presentation"><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li role="presentation"><a href="{{ url_for('main.about') }}">About</a></li>
             <li role="presentation"><a href="#">Contact</a></li>
+            {% if current_user.is_authenticated() %}
+            <li role="presentation"><a href="{{ url_for('user.logout') }}">Logout</a></li>
+            {% else %}
+            <li role="presentation"><a href="{{ url_for('user.register') }}">Sign up</a></li>
+            <li role="presentation"><a href="{{ url_for('user.login') }}">Login</a></li>
+            {% endif %}
           </ul>
         </nav>
         <h3 class="text-muted">pupHub</h3>
