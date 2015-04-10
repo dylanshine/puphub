@@ -5,11 +5,12 @@ from flask import render_template, Blueprint, url_for, \
 from flask.ext.login import login_user, logout_user, \
     login_required, current_user
 
-from project.models import User
-from .token import generate_confirmation_token, confirm_token
-from .email import send_email
 from project import db, bcrypt, login_manager
+from project.models import User
+from .decorators import check_confirmed
+from .email import send_email
 from .forms import LoginForm, RegisterForm, ChangePasswordForm
+from .token import generate_confirmation_token, confirm_token
 
 
 user_blueprint = Blueprint('user', __name__,)
