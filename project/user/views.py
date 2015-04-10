@@ -66,6 +66,15 @@ def confirm_email(token):
     return redirect(url_for('main.index'))
 
 
+@user_blueprint.route('/unconfirmed')
+@login_required
+def unconfirmed():
+    if current_user.confirmed:
+        return redirect('main.home')
+    flash('Please confirm your account!', 'warning')
+    return render_template('user/unconfirmed.html')
+
+
 @user_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm(request.form)
