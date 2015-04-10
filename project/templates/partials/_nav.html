@@ -4,8 +4,12 @@
         <li role="presentation"><a href="{{ url_for('main.index') }}">Home</a></li>
         <li role="presentation"><a href="{{ url_for('main.about') }}">About</a></li>
         <li role="presentation"><a href="#">Contact</a></li>
-        {% if current_user.is_authenticated() %}
+        {% if current_user.confirmed and current_user.is_authenticated() %}
         <li role="presentation"><a href="{{ url_for('user.profile') }}">Profile</a></li>
+        {% elif current_user.is_authenticated() %}
+        <li role="presentation"><a href="{{ url_for('user.unconfirmed') }}">Confirm</a></li>
+        {% endif %}
+        {% if current_user.is_authenticated() %}
         <li role="presentation"><a href="{{ url_for('user.logout') }}">Logout</a></li>
         {% else %}
         <li role="presentation"><a href="{{ url_for('user.register') }}">Sign up</a></li>
