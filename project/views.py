@@ -18,8 +18,3 @@ def login_required(test):
             flash('You need to login first.')
             return redirect(url_for('users.login'))
     return wrap
-
-
-@app.route('/')
-def index():
-    return render_template('index.html')
