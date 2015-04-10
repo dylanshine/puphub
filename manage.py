@@ -2,6 +2,7 @@ import datetime
 
 from project import app, db
 from project import models
+from project.models import User
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 
@@ -21,13 +22,6 @@ def create_db():
 def drop_db():
     """Drops the db tables."""
     db.drop_all()
-
-
-@manager.command
-def create_admin():
-    """Creates the admin user."""
-    db.session.add(User("ad@min.com", "admin"))
-    db.session.commit()
 
 
 @manager.command
