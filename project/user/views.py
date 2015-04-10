@@ -71,7 +71,7 @@ def confirm_email(token):
 @login_required
 def unconfirmed():
     if current_user.confirmed:
-        return redirect('main.home')
+        return redirect('main.index')
     flash('Please confirm your account!', 'warning')
     return render_template('user/unconfirmed.html')
 
