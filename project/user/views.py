@@ -7,7 +7,7 @@ from flask.ext.login import login_user, logout_user, \
 
 from project.models import User
 from .token import generate_confirmation_token, confirm_token
-from user.email import send_email
+from .email import send_email
 from project import db, bcrypt, login_manager
 from .forms import LoginForm, RegisterForm, ChangePasswordForm
 
