@@ -1,12 +1,16 @@
+import datetime
+
 from flask import render_template, Blueprint, url_for, \
     redirect, flash, request
 from flask.ext.login import login_user, logout_user, \
     login_required, current_user
 
-from project.models import User
-# from project.email import send_email
 from project import db, bcrypt, login_manager
+from project.models import User
+from .decorators import check_confirmed
+from .email import send_email
 from .forms import LoginForm, RegisterForm, ChangePasswordForm
+from .token import generate_confirmation_token, confirm_token
 
 
 user_blueprint = Blueprint('user', __name__,)
@@ -23,17 +27,65 @@ def register():
     if form.validate_on_submit():
         user = User(
             email=form.email.data,
-            password=form.password.data
+            password=form.password.data,
+            confirmed=False
         )
         db.session.add(user)
         db.session.commit()
 
-        login_user(user)
-        flash('You registered and are now logged in. Welcome!', 'success')
+        token = generate_confirmation_token(user.email)
+        confirm_url = url_for(
+            'user.confirm_email', token=token, _external=True)
+        html = render_template('user/activate.html', confirm_url=confirm_url)
+        subject = "Please confirm your email"
+        send_email(user.email, subject, html)
 
-        return redirect(url_for('main.index'))
+        login_user(user)
+
+        flash('A confirmation email has been sent via email.', 'success')
+        return redirect(url_for("user.unconfirmed"))
 
     return render_template('user/register.html', form=form)
+
+
+@user_blueprint.route('/confirm/<token>')
+@login_required
+def confirm_email(token):
+    try:
+        email = confirm_token(token)
+    except:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+    user = User.query.filter_by(email=email).first_or_404()
+    if user.confirmed:
+        flash('Account already confirmed. Please login.', 'success')
+    else:
+        user.confirmed = True
+        user.confirmed_on = datetime.datetime.now()
+        db.session.add(user)
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!', 'success')
+    return redirect(url_for('main.index'))
+
+
+@user_blueprint.route('/unconfirmed')
+@login_required
+def unconfirmed():
+    if current_user.confirmed:
+        return redirect('main.home')
+    flash('Please confirm your account!', 'warning')
+    return render_template('user/unconfirmed.html')
+
+
+@user_blueprint.route('/resend')
+@login_required
+def resend_confirmation():
+    token = generate_confirmation_token(current_user.email)
+    confirm_url = url_for('user.confirm_email', token=token, _external=True)
+    html = render_template('user/activate.html', confirm_url=confirm_url)
+    subject = "Please confirm your email"
+    send_email(current_user.email, subject, html)
+    flash('A new confirmation email has been sent.', 'success')
+    return redirect(url_for('user.unconfirmed'))
 
 
 @user_blueprint.route('/login', methods=['GET', 'POST'])
@@ -62,6 +114,7 @@ def logout():
 
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
 @login_required
+@check_confirmed
 def profile():
     form = ChangePasswordForm(request.form)
     if form.validate_on_submit():
