@@ -1,0 +1,16 @@
+<div class="header clearfix">
+    <nav>
+      <ul class="nav nav-pills pull-right">
+        <li role="presentation"><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li role="presentation"><a href="{{ url_for('main.about') }}">About</a></li>
+        <li role="presentation"><a href="#">Contact</a></li>
+        {% if current_user.is_authenticated() %}
+        <li role="presentation"><a href="{{ url_for('user.logout') }}">Logout</a></li>
+        {% else %}
+        <li role="presentation"><a href="{{ url_for('user.register') }}">Sign up</a></li>
+        <li role="presentation"><a href="{{ url_for('user.login') }}">Login</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    <h3 class="text-muted">pupHub</h3>
+</div>
