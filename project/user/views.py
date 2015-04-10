@@ -9,7 +9,7 @@ from project import db, bcrypt, login_manager
 from project.models import User
 from .decorators import check_confirmed
 from .email import send_email
-from .forms import LoginForm, RegisterForm, ChangePasswordForm
+from .forms import LoginForm, RegisterForm, ChangePasswordForm, ResetPasswordForm
 from .token import generate_confirmation_token, confirm_token
 
 
@@ -65,6 +65,39 @@ def confirm_email(token):
         db.session.commit()
         flash('You have confirmed your account. Thanks!', 'success')
     return redirect(url_for('main.index'))
+
+
+@user_blueprint.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    form = ResetPasswordForm(request.form)
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            token = generate_confirmation_token(user.email)
+            reset_url = url_for(
+                'user.confirm_password', token=token, _external=True)
+            html = render_template(
+                'user/password_reset_email.html', reset_url=reset_url)
+            subject = "Request to change password"
+            send_email(user.email, subject, html)
+            flash('A password reset link has been sent via email.', 'success')
+            return redirect(url_for("main.index"))
+        else:
+            flash('No account matches that email.', 'danger')
+            return redirect(url_for("user.reset_password"))
+    return render_template('user/password_reset.html', form=form)
+
+
+@user_blueprint.route('/reset/<token>', methods=['GET', 'POST'])
+def confirm_password(token):
+    try:
+        email = confirm_token(token)
+    except:
+        flash('The password reset link is invalid or has expired.', 'danger')
+        return redirect(url_for('main.index'))
+    user = User.query.filter_by(email=email).first()
+    login_user(user)
+    return redirect(url_for('user.profile'))
 
 
 @user_blueprint.route('/unconfirmed')
