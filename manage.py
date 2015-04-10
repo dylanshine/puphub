@@ -8,5 +8,24 @@ migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
+
+@manager.command
+def create_db():
+    """Creates the db tables."""
+    db.create_all()
+
+
+@manager.command
+def drop_db():
+    """Drops the db tables."""
+    db.drop_all()
+
+
+@manager.command
+def create_admin():
+    """Creates the admin user."""
+    db.session.add(User("ad@min.com", "admin"))
+    db.session.commit()
+
 if __name__ == '__main__':
     manager.run()
