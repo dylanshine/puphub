@@ -57,6 +57,9 @@ class Category(db.Model):
     title = db.Column(db.String, unique=True, nullable=False)
     webinars = db.relationship("Webinar", backref="category")
 
+    def __repr__(self):
+        return '<Category: {}'.format(self.title)
+
 
 class Webinar(db.Model):
 
@@ -73,3 +76,6 @@ class Webinar(db.Model):
         'User', secondary=student_table, backref=db.backref('webinar', lazy='dynamic'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<Webinar: {}'.format(self.title)
