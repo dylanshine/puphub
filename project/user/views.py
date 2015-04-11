@@ -97,7 +97,7 @@ def confirm_password(token):
         return redirect(url_for('main.index'))
     user = User.query.filter_by(email=email).first()
     login_user(user)
-    return redirect(url_for('user.profile'))
+    return redirect(url_for('user.change_password'))
 
 
 @user_blueprint.route('/unconfirmed')
@@ -149,6 +149,13 @@ def logout():
 @login_required
 @check_confirmed
 def profile():
+    return render_template('user/profile.html')
+
+
+@user_blueprint.route('/change-password', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def change_password():
     form = ChangePasswordForm(request.form)
     if form.validate_on_submit():
         user = User.query.filter_by(email=current_user.email).first()
@@ -159,5 +166,5 @@ def profile():
             return redirect(url_for('user.profile'))
         else:
             flash('Password change was unsuccessful.', 'danger')
-            return redirect(url_for('user.profile'))
-    return render_template('user/profile.html', form=form)
+            return redirect(url_for('user.change_password'))
+    return render_template('user/password_change.html', form=form)
