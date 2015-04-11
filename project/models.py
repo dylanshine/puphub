@@ -3,9 +3,16 @@ import datetime
 from project import db, bcrypt
 
 
+students = db.Table(
+    'student',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('webinar_id', db.Integer, db.ForeignKey('webinar.id'))
+)
+
+
 class User(db.Model):
 
-    __tablename__ = "users"
+    __tablename__ = "user"
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
@@ -15,6 +22,7 @@ class User(db.Model):
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime, nullable=True)
     rating = db.Column(db.Float, nullable=True)
+    webinar = db.relationship("Webinar", backref="user")
 
     def __init__(self, email, password, confirmed,
                  paid=False, admin=False, confirmed_on=None):
@@ -43,8 +51,25 @@ class User(db.Model):
 
 class Category(db.Model):
 
-    __tablename__ = "categories"
+    __tablename__ = "category"
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, unique=True, nullable=False)
-    classes = relationship("Class")
+    webinars = db.relationship("Webinar", backref="category")
+
+
+class Webinar(db.Model):
+
+    __tablename__ = "webinar"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String, unique=True, nullable=False)
+    description = db.Column(db.String, unique=True, nullable=False)
+    url = db.Column(db.String, unique=True, nullable=False)
+    start = db.Column(db.DateTime, nullable=False)
+    finish = db.Column(db.DateTime, nullable=False)
+    rating = db.Column(db.Float, nullable=True)
+    students = db.relationship(
+        'student', secondary=students, backref=db.backref('webinar', lazy='dynamic'))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
