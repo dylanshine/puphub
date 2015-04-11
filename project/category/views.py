@@ -9,10 +9,10 @@ category_blueprint = Blueprint('category', __name__,)
 @category_blueprint.route('/categories')
 def index():
     categories = Category.query.all()
-    return render_template('category/categories.html', categories=categories)
+    return render_template('category/index.html', categories=categories)
 
 
 @category_blueprint.route('/category/<category_slug>')
 def show(category_slug):
     category = Category.query.filter_by(slug=category_slug).first()
-    return render_template('category/category.html', category=category)
+    return render_template('category/show.html', category=category)
