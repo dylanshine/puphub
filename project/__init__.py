@@ -19,7 +19,7 @@ from project.user.views import user_blueprint
 app.register_blueprint(main_blueprint)
 app.register_blueprint(user_blueprint)
 
-from project.models import User
+from project.models import User, Category, Webinar
 
 login_manager.login_view = "user.login"
 login_manager.login_message_category = "danger"
