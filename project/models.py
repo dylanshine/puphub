@@ -14,6 +14,7 @@ class User(db.Model):
     admin = db.Column(db.Boolean, nullable=False, default=False)
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime, nullable=True)
+    rating = db.Column(db.Float, nullable=True)
 
     def __init__(self, email, password, confirmed,
                  paid=False, admin=False, confirmed_on=None):
