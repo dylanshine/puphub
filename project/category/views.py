@@ -14,5 +14,5 @@ def index():
 
 @category_blueprint.route('/category/<category_slug>')
 def show(category_slug):
-    category = Category.query.filter_by(slug=category_slug)
+    category = Category.query.filter_by(slug=category_slug).first()
     return render_template('category/category.html', category=category)
