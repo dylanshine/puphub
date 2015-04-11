@@ -1,6 +1,7 @@
 import datetime
 
 from project import db, bcrypt
+from .helpers import slugify
 
 
 student_table = db.Table(
@@ -25,13 +26,14 @@ class User(db.Model):
     webinars = db.relationship("Webinar", backref="user")
 
     def __init__(self, email, password, confirmed,
-                 paid=False, admin=False, confirmed_on=None):
+                 paid=False, admin=False, confirmed_on=None, rating=None):
         self.email = email
         self.password = bcrypt.generate_password_hash(password)
         self.registered_on = datetime.datetime.now()
         self.admin = admin
         self.confirmed = confirmed
         self.confirmed_on = confirmed_on
+        self.rating = rating
 
     def is_authenticated(self):
         return True
@@ -55,7 +57,12 @@ class Category(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, unique=True, nullable=False)
+    slug = db.Column(db.String, unique=True, nullable=False)
     webinars = db.relationship("Webinar", backref="category")
+
+    def __init__(self, title):
+        self.title = title
+        self.slug = slugify(title)
 
     def __repr__(self):
         return '<Category: {}'.format(self.title)
