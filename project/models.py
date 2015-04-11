@@ -39,3 +39,12 @@ class User(db.Model):
 
     def __repr__(self):
         return '<email {}'.format(self.email)
+
+
+class Category(db.Model):
+
+    __tablename__ = "categories"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String, unique=True, nullable=False)
+    classes = relationship("Class")
