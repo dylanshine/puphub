@@ -3,7 +3,7 @@ import datetime
 from project import db, bcrypt
 
 
-students = db.Table(
+student_table = db.Table(
     'student',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('webinar_id', db.Integer, db.ForeignKey('webinar.id'))
@@ -22,7 +22,7 @@ class User(db.Model):
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime, nullable=True)
     rating = db.Column(db.Float, nullable=True)
-    webinar = db.relationship("Webinar", backref="user")
+    webinars = db.relationship("Webinar", backref="user")
 
     def __init__(self, email, password, confirmed,
                  paid=False, admin=False, confirmed_on=None):
@@ -70,6 +70,6 @@ class Webinar(db.Model):
     finish = db.Column(db.DateTime, nullable=False)
     rating = db.Column(db.Float, nullable=True)
     students = db.relationship(
-        'student', secondary=students, backref=db.backref('webinar', lazy='dynamic'))
+        'User', secondary=student_table, backref=db.backref('webinar', lazy='dynamic'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
