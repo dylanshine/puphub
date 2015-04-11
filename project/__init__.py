@@ -15,9 +15,12 @@ db = SQLAlchemy(app)
 
 from project.main.views import main_blueprint
 from project.user.views import user_blueprint
+from project.category.views import category_blueprint
 
 app.register_blueprint(main_blueprint)
 app.register_blueprint(user_blueprint)
+app.register_blueprint(category_blueprint)
+
 
 from project.models import User, Category, Webinar
 

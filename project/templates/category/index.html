@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+  <ul>
+    {% for category in categories %}
+      <li><a href="category/{{category.slug}}">{{category.title}}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}
