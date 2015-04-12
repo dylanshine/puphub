@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}Create Webinar{% endblock %}
+
+{% block content %}
+
+<h1>Create a new Webinar</h1>
+<br>
+<form role="form" method="post" action="">
+  {{ form.csrf_token }}
+  {{ form.title(placeholder="title") }}
+    <span class="error">
+      {% if form.title.errors %}
+        {% for error in form.title.errors %}
+          {{ error }}
+        {% endfor %}
+      {% endif %}
+    </span>
+  </p>
+  <p>
+  {{ form.description(placeholder="description") }}
+    <span class="error">
+      {% if form.description.errors %}
+        {% for error in form.description.errors %}
+          {{ error }}
+        {% endfor %}
+      {% endif %}
+    </span>
+  </p>
+  <button class="btn btn-success" type="submit">Create Webinar</button>
+</form>
+
+{% endblock %}

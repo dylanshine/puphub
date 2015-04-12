@@ -9,6 +9,7 @@
   <p>Email: {{current_user.email}}</p>
 {% endif %}
 
+<p>Create <a href="{{ url_for('webinar.new') }}">Webinar</a>.</p>
 <p>Change <a href="{{ url_for('user.change_password') }}">Password</a>.</p>
 
 {% endblock %}

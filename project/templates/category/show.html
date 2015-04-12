@@ -4,4 +4,10 @@
 
 {% block content %}
     <h1>{{category.title}}</h1>
+
+    {% for webinar in category.webinars %}
+        <ul>
+            <li><a href="{{ url_for('webinar.show', id=webinar.id)}}">{{webinar.title}}</a></li>
+        </ul>
+    {% endfor %}
 {% endblock %}
