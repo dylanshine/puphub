@@ -74,12 +74,11 @@ class Webinar(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, unique=True, nullable=False)
     description = db.Column(db.String, unique=True, nullable=False)
-    url = db.Column(db.String, unique=True, nullable=False)
-    start = db.Column(db.DateTime, nullable=False)
-    finish = db.Column(db.DateTime, nullable=False)
+    session = db.Column(db.String, unique=True, nullable=False)
+    token = db.Column(db.String, unique=True, nullable=False)
     rating = db.Column(db.Float, nullable=True)
     students = db.relationship(
-        'User', secondary=student_table, backref=db.backref('webinar', lazy='dynamic'))
+        'User', secondary=student_table, backref=db.backref('registered_webinars', lazy='dynamic'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
