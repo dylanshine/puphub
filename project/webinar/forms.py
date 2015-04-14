@@ -17,6 +17,8 @@ class WebinarCreateForm(Form):
         'description', validators=[DataRequired()])
     category = SelectField(
         'category', choices=[(c, c) for c in CATEGORIES], validators=[DataRequired()])
+    # date = DateField('date',)
+    # time = TimeField('time',)
 
 
 class WebinarEditForm(Form):
