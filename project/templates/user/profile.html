@@ -9,6 +9,13 @@
   <p>Email: {{current_user.email}}</p>
 {% endif %}
 
+<h1>Upcoming Webinars</h1>
+{% for webinar in current_user.registered_webinars.all() %}
+    <ul>
+        <li><a href="{{ url_for('webinar.show', id=webinar.id) }}">{{webinar.title}}</a></li>
+    </ul>
+{% endfor %}
+
 <p>Create <a href="{{ url_for('webinar.new') }}">Webinar</a>.</p>
 <p>Change <a href="{{ url_for('user.change_password') }}">Password</a>.</p>
 
