@@ -27,6 +27,16 @@
       {% endif %}
     </span>
   </p>
+  <p>
+  {{ form.category(placeholder="category") }}
+    <span class="error">
+      {% if form.category.errors %}
+        {% for error in form.category.errors %}
+          {{ error }}
+        {% endfor %}
+      {% endif %}
+    </span>
+  </p>
   <button class="btn btn-success" type="submit">Create Webinar</button>
 </form>
 
