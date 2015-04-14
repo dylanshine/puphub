@@ -6,3 +6,5 @@ migrations
 tmp
 __pycache__
 venv.sh
+ssl.cert
+ssl.key
