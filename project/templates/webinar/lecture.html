@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}Lecture{% endblock %}
+
+{% block content %}
+  
+<div id="camera"></div>
+    
+    
+{% endblock %}
+
+{% block js %}
+  <script src="https://static.opentok.com/v2/js/opentok.min.js" ></script>   
+
+  <script type="text/javascript" charset="utf-8">
+
+  var session = OT.initSession({{api_key}},"{{webinar.session}}");
+
+  session.connect("{{webinar.token}}", function(error) {
+    var publisher = OT.initPublisher('camera');
+    session.publish(publisher);
+  });
+
+  session.on("streamCreated", function(event) {
+    session.subscribe(event.stream);
+  });
+ 
+         
+  </script>
+{% endblock %}

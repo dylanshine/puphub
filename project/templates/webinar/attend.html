@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  
+  <div id="camera"></div>
+    
+    
+{% endblock %}
+
+{% block js %}
+  <script src="https://static.opentok.com/v2/js/opentok.min.js" ></script>   
+
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function(){
+      $("#camera").attr('value',document.URL);
+
+    })
+
+  var session = OT.initSession("{{webinar.session}}");
+  session.addEventListener("sessionConnected", sessionConnectedHandler);
+  session.addEventListener("streamCreated", streamCreatedHandler);
+  session.connect({{api_key}}, "{{webinar.token}}");
+
+ function sessionConnectedHandler(event) {
+    subscribeToStreams(event.streams);
+  }
+      
+  function streamCreatedHandler(event) {
+    subscribeToStreams(event.streams);
+  }
+
+  function subscribeToStreams(streams) {
+    for (var i = 0; i < streams.length; i++) {
+      var stream = streams[i];
+      console.log(stream.connection.connectionId+"&"+session.connection.connectionId);
+      if (stream.connection.connectionId != session.connection.connectionId) {
+        session.subscribe(stream);
+      }
+    }
+  }
+ 
+         
+  </script>
+{% endblock %}
