@@ -4,7 +4,8 @@ from flask import render_template, Blueprint, url_for, \
     redirect, flash, request
 from flask.ext.login import login_required, current_user
 
-from project import db
+from project import app, db, opentok_sdk
+from opentok import MediaModes
 from project.models import User, Category, Webinar
 from .forms import WebinarCreateForm, WebinarEditForm
 
@@ -17,16 +18,15 @@ def new():
     form = WebinarCreateForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
+            session = opentok_sdk.create_session(media_mode=MediaModes.routed)
             cat = Category.query.filter_by(title=form.category.data).first()
             webinar = Webinar(
                 title=form.title.data,
                 description=form.description.data,
-                start=datetime.datetime.utcnow(),
-                finish=datetime.datetime.utcnow(),
+                session=session.session_id,
+                token=opentok_sdk.generate_token(session.session_id),
                 category_id=cat.id,
-                teacher_id=current_user.id,
-                # temporary test url
-                url="wwww." + form.title.data + cat.title + ".com"
+                teacher_id=current_user.id
             )
             db.session.add(webinar)
             db.session.commit()
@@ -96,4 +96,24 @@ def register(id):
         return redirect(url_for("webinar.show", id=webinar.id))
     else:
         flash('You are already registered for this Webinar.', 'info')
+        return redirect(url_for('webinar.show', id=webinar.id))
+
+
+@webinar_blueprint.route('/webinar/<session_id>/attend')
+@login_required
+def attend(session_id):
+    webinar = Webinar.query.filter_by(session=session_id).first()
+    if current_user in webinar.students or webinar.teacher_id == current_user.id:
+        return render_template('webinar/attend.html', api_key=app.config['OT_API_KEY'], webinar=webinar)
+    else:
+        return redirect(url_for('webinar.show', id=webinar.id))
+
+
+@webinar_blueprint.route('/webinar/<session_id>/lecture')
+@login_required
+def lecture(session_id):
+    webinar = Webinar.query.filter_by(session=session_id).first()
+    if current_user.id == webinar.teacher_id:
+        return render_template('webinar/lecture.html', api_key=app.config['OT_API_KEY'], webinar=webinar)
+    else:
         return redirect(url_for('webinar.show', id=webinar.id))
