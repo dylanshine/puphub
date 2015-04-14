@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <p>Are you sure you want to delete this Webinar?</p>
+    
+    <form role="form" method="post" action="{{ url_for('webinar.destroy', id=webinar.id) }}">
+        <button class="btn btn-danger" type="submit">Delete Webinar</button>
+    </form>
+
+{% endblock %}

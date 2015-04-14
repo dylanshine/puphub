@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <h1>{{webinar.title}}</h1>
+    <br>
+    <p>{{webinar.description}}</p>
+    
+    {% if current_user in webinar.students %}
+        <a href="{{ url_for('webinar.attend', session_id=webinar.session)}}">Attend Webinar</a><br>
+    {% else %}
+        <form role="form" method="post" action="{{ url_for('webinar.register', id=webinar.id) }}">
+            <button class="btn btn-success" type="submit">Register for Webinar</button>
+        </form>   
+    {% endif %}
+    {% if current_user.id == webinar.teacher_id %}
+        <a href="{{ url_for('webinar.lecture', session_id=webinar.session)}}">Lecture Webinar</a><br>
+        <a href="{{ url_for('webinar.edit', id=webinar.id)}}">Edit Webinar</a><br>
+        <a href="{{ url_for('webinar.destroy', id=webinar.id)}}">Delete Webinar</a>
+    {% endif %}
+{% endblock %}
