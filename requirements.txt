@@ -15,7 +15,7 @@ MarkupSafe==0.23
 opentok==2.2.1
 psycopg2==2.6
 python-bcrypt==0.3.1
-python-slugify==1.0.1
+python-slugify==1.0.2
 pytz==2015.2
 requests==2.6.0
 six==1.9.0
