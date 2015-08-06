@@ -1,1 +1,1 @@
-pupHub - Flask App
+streamschool - Flask App
